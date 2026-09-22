@@ -317,8 +317,7 @@
   }
   body.started .views { animation: fadein 1s ease 4.4s both; }
   .views svg { display: block; }
-  .views .clip { overflow: hidden; display: flex; align-items: center; }
-  .views .clip img { display: block; height: 20px; margin-left: -10px; filter: grayscale(1); }
+  #vcount { color: var(--fg); font-size: 13px; letter-spacing: 0.08em; }
 
   .term {
     width: 100%;
@@ -444,7 +443,7 @@
 
     <div class="views" id="views" title="просмотры">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
-      <span class="clip"><img id="vbadge" data-src="https://visitor-badge.laobi.icu/badge?page_id=c0deine-rmz.github.io.v2&left_color=black&right_color=black&left_text=%E2%80%8B" alt=""></span>
+      <span id="vcount"></span>
     </div>
   </section>
 
@@ -585,13 +584,21 @@
   gate.addEventListener('click', () => {
     initAudio();
     sndClick();
-    const vb = document.getElementById('vbadge');
+    const vc = document.getElementById('vcount');
     const today = new Date().toDateString();
-    if (localStorage.getItem('vdate') !== today) {
-      localStorage.setItem('vdate', today);
-      if (vb.dataset.src) { vb.src = vb.dataset.src; vb.removeAttribute('data-src'); }
+    const cached = JSON.parse(localStorage.getItem('vcount') || 'null');
+    if (cached && cached.d === today) {
+      vc.textContent = cached.n;
     } else {
-      document.getElementById('views').style.display = 'none';
+      fetch('https://visitor-badge.laobi.icu/badge?page_id=c0deine-rmz.github.io.v2&left_color=black&right_color=black&left_text=%E2%80%8B')
+        .then(r => r.text())
+        .then(svg => {
+          const m = svg.match(/<text[^>]*>(\d+)<\/text>/);
+          const n = m ? m[1] : '1';
+          localStorage.setItem('vcount', JSON.stringify({ d: today, n: n }));
+          vc.textContent = n;
+        })
+        .catch(() => { document.getElementById('views').style.display = 'none'; });
     }
     gate.classList.add('bye');
     document.body.classList.add('started');
@@ -723,9 +730,6 @@
     applyLang();
   }));
   applyLang();
-
-  const vbadge = document.getElementById('vbadge');
-  vbadge.addEventListener('error', () => { document.getElementById('views').style.display = 'none'; });
 
   if (location.hash === '#about') show('about');
 </script>
