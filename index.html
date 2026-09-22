@@ -475,7 +475,7 @@
       gate: 'нажми',
       script: [
         { cmd: 'whoami', out: ['c0deine'] },
-        { cmd: 'id', out: ['фрилансер · вайбкодер · верующий но наркоман'] },
+        { cmd: 'id', out: ['фрилансер · вайбкодер · делаю красивую хуйню'] },
         { cmd: 'cat навыки.txt', out: ['python / java / js / lua'] },
         { cmd: 'cat статус.txt', out: ['открыт для заказов'] },
         { cmd: 'ls контакты/', out: ['steam   telegram   discord'] }
@@ -491,7 +491,7 @@
       gate: 'click',
       script: [
         { cmd: 'whoami', out: ['c0deine'] },
-        { cmd: 'id', out: ['freelancer · vibecoder · believer but a junkie'] },
+        { cmd: 'id', out: ['freelancer · vibecoder · i make pretty shit'] },
         { cmd: 'cat skills.txt', out: ['python / java / js / lua'] },
         { cmd: 'cat status.txt', out: ['open for work'] },
         { cmd: 'ls contacts/', out: ['steam   telegram   discord'] }
@@ -586,20 +586,14 @@
     sndClick();
     const vc = document.getElementById('vcount');
     const today = new Date().toDateString();
-    const cached = JSON.parse(localStorage.getItem('vcount') || 'null');
-    if (cached && cached.d === today) {
-      vc.textContent = cached.n;
-    } else {
-      fetch('https://visitor-badge.laobi.icu/badge?page_id=c0deine-rmz.github.io.v2&left_color=black&right_color=black&left_text=%E2%80%8B')
-        .then(r => r.text())
-        .then(svg => {
-          const m = svg.match(/<text[^>]*>(\d+)<\/text>/);
-          const n = m ? m[1] : '1';
-          localStorage.setItem('vcount', JSON.stringify({ d: today, n: n }));
-          vc.textContent = n;
-        })
-        .catch(() => { document.getElementById('views').style.display = 'none'; });
-    }
+    const bump = localStorage.getItem('vdate') !== today;
+    fetch('https://abacus.jasoncameron.dev/' + (bump ? 'hit' : 'get') + '/c0deine-rmz/views26')
+      .then(r => r.json())
+      .then(j => {
+        vc.textContent = j.value;
+        if (bump) localStorage.setItem('vdate', today);
+      })
+      .catch(() => { document.getElementById('views').style.display = 'none'; });
     gate.classList.add('bye');
     document.body.classList.add('started');
     document.getElementById('tagtext').textContent = '';
