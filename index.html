@@ -585,13 +585,12 @@
     initAudio();
     sndClick();
     const vc = document.getElementById('vcount');
-    const today = new Date().toDateString();
-    const bump = localStorage.getItem('vdate') !== today;
+    const bump = !localStorage.getItem('vseen');
     fetch('https://abacus.jasoncameron.dev/' + (bump ? 'hit' : 'get') + '/c0deine-rmz/views26')
       .then(r => r.json())
       .then(j => {
         vc.textContent = j.value;
-        if (bump) localStorage.setItem('vdate', today);
+        if (bump) localStorage.setItem('vseen', '1');
       })
       .catch(() => { document.getElementById('views').style.display = 'none'; });
     gate.classList.add('bye');
