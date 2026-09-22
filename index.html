@@ -152,7 +152,11 @@
     border: 1px solid var(--line);
     opacity: 0;
   }
-  body.started .ava { animation: fadein 1.4s ease .3s forwards; }
+  body.started .ava { animation: avain 1.6s cubic-bezier(.2,.8,.2,1) .2s both; }
+  @keyframes avain {
+    from { opacity: 0; transform: scale(.9); filter: grayscale(1) contrast(1.05) blur(6px); }
+    to { opacity: 1; transform: scale(1); filter: grayscale(1) contrast(1.05) blur(0); }
+  }
   @keyframes fadein { to { opacity: 1; } }
 
   .name-row {
@@ -170,11 +174,11 @@
     display: inline-block;
     opacity: 0;
   }
-  body.started h1 .ch { animation: pupp .4s linear forwards; }
-  @keyframes pupp {
-    0% { transform: scale(1); opacity: 0; }
-    50% { transform: scale(1.12); opacity: 1; }
-    100% { transform: scale(1); opacity: 1; }
+  body.started h1 .ch { animation: risein .7s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes risein {
+    0% { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+    60% { opacity: 1; filter: blur(0); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
   .cursor {
     display: inline-block;
@@ -209,7 +213,7 @@
     text-align: center;
     opacity: 0;
   }
-  body.started .tagline { animation: fadein 1s ease 2.4s forwards; }
+  body.started .tagline { animation: fadein .5s ease 2s both; }
 
   nav {
     width: 100%;
@@ -221,19 +225,19 @@
     border-top: 1px solid var(--line);
     opacity: 0;
   }
-  body.started ul.links { animation: fadein 1s ease 3s forwards; }
+  body.started ul.links { animation: fadein .8s ease 2.8s both; }
   ul.links li {
     opacity: 0;
     transform: translateY(14px);
     border-bottom: 1px solid var(--line);
     transition: color .1s ease-in-out;
   }
-  body.started ul.links li { animation: rowin .6s ease forwards; }
-  ul.links li:nth-child(1) { animation-delay: 3.1s; }
-  ul.links li:nth-child(2) { animation-delay: 3.35s; }
-  ul.links li:nth-child(3) { animation-delay: 3.6s; }
+  body.started ul.links li:nth-child(1) { animation: rowin .9s cubic-bezier(.16,1,.3,1) 2.9s both; }
+  body.started ul.links li:nth-child(2) { animation: rowin .9s cubic-bezier(.16,1,.3,1) 3.25s both; }
+  body.started ul.links li:nth-child(3) { animation: rowin .9s cubic-bezier(.16,1,.3,1) 3.6s both; }
   @keyframes rowin {
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(18px); filter: blur(6px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
   ul.links:has(> li:hover) > li:not(:hover) { color: #4a4a4a; }
   ul.links:has(> li:hover) > li:not(:hover) .handle { color: #333; }
@@ -261,6 +265,21 @@
   }
   .handle { color: var(--dim); font-size: 13px; transition: color .1s ease-in-out; }
   li:hover .handle { color: var(--fg); }
+
+  .sweep {
+    position: fixed;
+    left: 0; right: 0; top: 0;
+    height: 2px;
+    background: rgba(255,255,255,.07);
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0;
+  }
+  body.started .sweep { animation: sweep 1.2s cubic-bezier(.4,0,.2,1) .1s both; }
+  @keyframes sweep {
+    0% { transform: translateY(-4px); opacity: 1; }
+    100% { transform: translateY(100vh); opacity: .3; }
+  }
 
   #gate {
     position: fixed;
@@ -296,7 +315,7 @@
     opacity: 0;
     margin-top: 2px;
   }
-  body.started .views { animation: fadein 1s ease 3.9s forwards; }
+  body.started .views { animation: fadein 1s ease 4.4s both; }
   .views svg { display: block; }
   .views .clip { overflow: hidden; display: flex; align-items: center; }
   .views .clip img { display: block; height: 20px; margin-left: -10px; filter: grayscale(1); }
@@ -372,6 +391,7 @@
 <body>
 
 <div id="gate"><span id="gatetext">нажми</span></div>
+<div class="sweep"></div>
 
 <header>
   <div>rx only</div>
@@ -457,7 +477,7 @@
       script: [
         { cmd: 'whoami', out: ['c0deine'] },
         { cmd: 'id', out: ['фрилансер · вайбкодер · верующий но наркоман'] },
-        { cmd: 'cat навыки.txt', out: ['python / java / js / lua', 'моды на майн', 'скрипты на роблокс', 'стим-профили', 'чб минимализм как образ жизни'] },
+        { cmd: 'cat навыки.txt', out: ['python / java / js / lua'] },
         { cmd: 'cat статус.txt', out: ['открыт для заказов'] },
         { cmd: 'ls контакты/', out: ['steam   telegram   discord'] }
       ]
@@ -473,7 +493,7 @@
       script: [
         { cmd: 'whoami', out: ['c0deine'] },
         { cmd: 'id', out: ['freelancer · vibecoder · believer but a junkie'] },
-        { cmd: 'cat skills.txt', out: ['python / java / js / lua', 'minecraft mods', 'roblox scripts', 'steam profiles', 'b&w minimalism as a lifestyle'] },
+        { cmd: 'cat skills.txt', out: ['python / java / js / lua'] },
         { cmd: 'cat status.txt', out: ['open for work'] },
         { cmd: 'ls contacts/', out: ['steam   telegram   discord'] }
       ]
@@ -488,7 +508,7 @@
     const s = document.createElement('span');
     s.className = 'ch';
     s.textContent = c;
-    s.style.animationDelay = (1.1 + i * 0.18) + 's';
+    s.style.animationDelay = (1.0 + i * 0.14) + 's';
     nameEl.appendChild(s);
   });
 
@@ -545,6 +565,21 @@
     el.addEventListener('click', sndClick);
   });
 
+  // ---- печать теглайна ----
+  let tagTyping = false;
+  function typeTag() {
+    tagTyping = true;
+    const el = document.getElementById('tagtext');
+    const text = i18n[lang].tag;
+    let ci = 0;
+    el.textContent = '';
+    const iv = setInterval(() => {
+      el.textContent = text.slice(0, ++ci);
+      if (ci % 2 === 0) sndTick();
+      if (ci >= text.length) { clearInterval(iv); tagTyping = false; }
+    }, 34);
+  }
+
   // ---- вход: клик открывает сайт, запускает звук и считает просмотр ----
   const gate = document.getElementById('gate');
   gate.addEventListener('click', () => {
@@ -554,12 +589,14 @@
     if (vb.dataset.src) { vb.src = vb.dataset.src; vb.removeAttribute('data-src'); }
     gate.classList.add('bye');
     document.body.classList.add('started');
+    document.getElementById('tagtext').textContent = '';
     const entrance = [];
-    for (let i = 0; i < 7; i++) entrance.push([1100 + i * 180, 1]);
-    [[2400, 0], [3000, 0], [3100, 0], [3350, 0], [3600, 0], [3900, 0]].forEach(x => entrance.push(x));
+    for (let i = 0; i < 7; i++) entrance.push([1000 + i * 140, 1]);
+    [[2050, 0], [2900, 0], [3250, 0], [3600, 0], [4400, 0]].forEach(x => entrance.push(x));
     entrance.forEach(([t, isChar]) => setTimeout(() => {
       if (isChar) sndTick(); else tone(700, 0.05, 0.01);
     }, t + 400));
+    setTimeout(typeTag, 2600);
     setTimeout(() => gate.remove(), 700);
   }, { once: true });
 
@@ -666,7 +703,7 @@
     const d = i18n[lang];
     document.querySelector('[data-view="main"]').textContent = d.main;
     document.querySelector('[data-view="about"]').textContent = d.about;
-    document.getElementById('tagtext').textContent = d.tag;
+    if (!tagTyping) document.getElementById('tagtext').textContent = d.tag;
     document.getElementById('foottext').textContent = d.foot;
     document.getElementById('views').title = d.views;
     const gt = document.getElementById('gatetext');
