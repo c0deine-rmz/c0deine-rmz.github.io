@@ -72,13 +72,14 @@
   header .right { text-align: right; }
 
   .tabs {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
     padding: 13px 24px;
     border-bottom: 1px solid var(--line);
     font-size: 13px;
   }
+  .tabs .mid { display: flex; gap: 40px; justify-content: center; }
   .tab {
     background: none;
     border: none;
@@ -102,6 +103,27 @@
   .tab:hover { color: var(--fg); }
   .tab.active { color: var(--fg); }
   .tab.active::after { transform: scaleX(1); }
+
+  .langs {
+    justify-self: end;
+    display: flex;
+    gap: 7px;
+    align-items: baseline;
+    font-size: 12px;
+  }
+  .lang {
+    background: none;
+    border: none;
+    color: var(--dim);
+    font: inherit;
+    letter-spacing: 0.1em;
+    padding: 0 0 1px;
+    border-bottom: 1px solid transparent;
+    transition: color .15s;
+  }
+  .lang:hover { color: var(--fg); }
+  .lang.active { color: var(--fg); border-bottom-color: var(--fg); }
+  .lsep { color: #333; }
 
   main {
     flex: 1;
@@ -258,7 +280,7 @@
   }
   .term-body {
     padding: 22px 18px 26px;
-    min-height: 420px;
+    min-height: 470px;
     font-size: 14px;
     line-height: 26px;
   }
@@ -303,7 +325,8 @@
   @media (max-width: 560px) {
     .ava { width: 96px; height: 96px; }
     footer .r { display: none; }
-    .term-body { font-size: 13px; line-height: 24px; min-height: 400px; }
+    .term-body { font-size: 13px; line-height: 24px; min-height: 440px; }
+    .tabs .mid { gap: 24px; }
   }
 </style>
 </head>
@@ -316,8 +339,14 @@
 </header>
 
 <div class="tabs">
-  <button class="tab active" data-view="main" type="button">главная</button>
-  <button class="tab" data-view="about" type="button">обо мне</button>
+  <div></div>
+  <div class="mid">
+    <button class="tab active" data-view="main" type="button">главная</button>
+    <button class="tab" data-view="about" type="button">обо мне</button>
+  </div>
+  <div class="langs">
+    <button class="lang active" data-lang="ru" type="button">ru</button><span class="lsep">/</span><button class="lang" data-lang="en" type="button">en</button>
+  </div>
 </div>
 
 <main>
@@ -327,7 +356,7 @@
       <h1 id="name">c0deine</h1>
       <img class="pill-spin" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/wAALCABIAEgBAREA/8QAHAAAAgIDAQEAAAAAAAAAAAAAAQcCCAADBgQF/8QAORAAAQIEBAUCAQgLAAAAAAAAAQIDAAQFEQYHEiEIEzFBYSJRMhQVFiNicYGRJDU2QkZTV5Sh0dL/2gAIAQEAAD8AplGQ+smOF/GuPZFqsVZ9GF6M8nU09NMqW+8kpBSpDVxdBuPUpQ8XiymEuFjKCgspNTkJ/EUwlQVzZ6aUhIIJOyGilNjsCDe9vJjsjk9k/wD07w5/Zj/ccni3hjydrzbqpSjTNBmnVFfOp00sAE9g2sqQE+ABFdc3+FPFuEpF6r4VnRimnN3U4y0wUTjSfflgkOADqUm/fSBFdiCDYixgRg3i7XCbw9yFHpsjjzHtMdVW1OB+nU+YtolUW9DjiO7hvqCVfDZJtfpZianFEkAm0eUvk9zvES5fvB5pA67iNjU0oG1z1hB8UWQ1MxtTZ/F2E5BTWLUJS44wyoJbqAHxAp/m6dwofFpAIubxRN5pxl5bLzam3EKKVoULFJGxBB6GHpwYZayeO8xXqtWWUP0fD6W5l1lYSUvvKUeU2pJvdHpUo+4TbvF95yYUtRFzHiUvaIFR63iOsdjvGazv3ghXvuI2tu26G0Up428upXD2KJbGlJaS1KVxxSZxpOlKW5pIBKkgAbLT6j19QUe4h6cFdDaoWQ0pUNKkTFam3px3UkpOlKi02LE7iyCoEWvq8XhuuOgn4hGvWCb3iJWCexgFYHcCMC/yjOZv1ghywFzCx4oaG1iHJevS5Cy9JtJn2NKSo62jewAO90lY72ve20fWyNpE1PZIYLW3XFMJ+Z2fqwLaeu3mOsVhefJ/aE/nEfovUgbJxCBGKwzVR0xEIicM1a+2I03jBhmrj+IkQDhmr3v8/twRhurg/r1v/EfDx7RZ6UwTX3ZmvNLCaXNEIKb3+pXsPaOL4PsSJrGSdNk1vuOzFJddkndagSkBRW2PCdCwAPsmG+XTc73iJeIO14HOUT1gc4+5iJfIPUwQ+Qb6toKniBcmFTxJYnTRMra698ocbeel/krBbVpUXHfSLfhqJ8AxXXhAx8zhbGkxQKi9y5KthCG1qPpbmEkhF+wCgopJ99N9hF1mpgOIuL/lEyvYd4GpJ8RHmdtjBUseR+ER1H3jzz82lhlSlEXtFPeLjHTVWqsthORe1oknC/OqF7c0j0ov0OlJJPlVtiDCDBsbxb/h3zrl69T5bD+JJ5KcQIVy2lrRYTiANiD05mxBG19iLm8PtidafSClQ3jcFg9Dt98Ek9bxHmCx1ER5J2pMS7alKUE28wjM+M35bDdPmKfTJxC68tKeS1pKwyD++vsLDcA7kkG1oqFNPvTUy7MzDinHnVlbi1G5Uom5J8kxqiTTi2nEuNLUhaCFJUk2II6EGHNlvn7XKDLtyOIGnatLtiyJhKwH0gCwBvssbdTvv1PSHfhrPTB9UbumssyzlwnlTY5K7kkC19j07E2uL2jpl5kUa9hVKcCNj+mNf9RzWJc68KUppwO1yVW4hRQWpdXOXqHUWTcfiSB5hLZiZ91CqMrlMNMOyQVsqbfILgH2E7hP3m59rHeEpMvvTL635h5x51Z1LW4oqUo+5J3Ma4//2Q==" alt="">
     </div>
-    <div class="tagline">пока ты спишь — твое время уходит<span class="cursor" style="height:.9em"></span></div>
+    <div class="tagline"><span id="tagtext">пока ты спишь — твое время уходит</span><span class="cursor" style="height:.9em"></span></div>
 
     <nav>
       <ul class="links" id="links">
@@ -362,13 +391,46 @@
 </main>
 
 <footer>
-  <span>не является лекарственным средством</span>
+  <span id="foottext">не является лекарственным средством</span>
   <span class="r">10100111010</span>
 </footer>
 
 <div class="toast" id="toast">скопировано</div>
 
 <script>
+  // ---- i18n ----
+  const i18n = {
+    ru: {
+      main: 'главная',
+      about: 'обо мне',
+      tag: 'пока ты спишь — твое время уходит',
+      foot: 'не является лекарственным средством',
+      toast: 'скопировано',
+      script: [
+        { cmd: 'whoami', out: ['c0deine'] },
+        { cmd: 'id', out: ['фрилансер · вайбкодер · верующий но наркоман'] },
+        { cmd: 'cat навыки.txt', out: ['python / java / js / lua', 'крафчу моды на майн — от идеи до релиза', 'скриптинг на роблокс — lua на поводке', 'стим-профили — чистый продукт без примесей', 'чб минимализм как образ жизни'] },
+        { cmd: 'cat статус.txt', out: ['открыт для заказов'] },
+        { cmd: 'ls контакты/', out: ['steam   telegram   discord'] }
+      ]
+    },
+    en: {
+      main: 'main',
+      about: 'about',
+      tag: 'while you sleep — your time is running out',
+      foot: 'not a medicinal product',
+      toast: 'copied',
+      script: [
+        { cmd: 'whoami', out: ['c0deine'] },
+        { cmd: 'id', out: ['freelancer · vibecoder · believer but a junkie'] },
+        { cmd: 'cat skills.txt', out: ['python / java / js / lua', 'crafting minecraft mods — from idea to release', 'roblox scripting — lua on a leash', 'steam profiles — pure product, no additives', 'b&w minimalism as a lifestyle'] },
+        { cmd: 'cat status.txt', out: ['open for work'] },
+        { cmd: 'ls contacts/', out: ['steam   telegram   discord'] }
+      ]
+    }
+  };
+  let lang = localStorage.getItem('lang') || 'ru';
+
   const nameEl = document.getElementById('name');
   const chars = nameEl.textContent.split('');
   nameEl.textContent = '';
@@ -395,6 +457,7 @@
   const toast = document.getElementById('toast');
   document.getElementById('dc').addEventListener('click', () => {
     navigator.clipboard.writeText('nikit0siq').catch(() => {});
+    toast.textContent = i18n[lang].toast;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 1400);
   });
@@ -407,7 +470,7 @@
   addEventListener('mousemove', e => {
     mx = e.clientX; my = e.clientY;
     xc.style.opacity = 1;
-    xc.classList.toggle('hot', !!e.target.closest('a,button,.tab'));
+    xc.classList.toggle('hot', !!e.target.closest('a,button,.tab,.lang'));
   });
   document.addEventListener('mouseleave', () => { xc.style.opacity = 0; });
   (function loop() {
@@ -432,13 +495,6 @@
   tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.view)));
 
   // ---- terminal ----
-  const script = [
-    { cmd: 'whoami', out: ['c0deine'] },
-    { cmd: 'id', out: ['фрилансер · вайбкодер · верующий но наркоман'] },
-    { cmd: 'cat навыки.txt', out: ['python / java / js', 'плагины для майнкрафта', 'профили стим под ключ', 'чб минимализм как образ жизни'] },
-    { cmd: 'cat статус.txt', out: ['открыт для заказов'] },
-    { cmd: 'ls контакты/', out: ['steam   telegram   discord'] }
-  ];
   const termbody = document.getElementById('termbody');
   let termRun = 0;
 
@@ -446,12 +502,11 @@
     termRun++;
     const run = termRun;
     termbody.innerHTML = '';
-    let li = 0;
+    const script = i18n[lang].script;
 
-    function addLine(cls, htmlContent) {
+    function addLine(cls) {
       const d = document.createElement('div');
       d.className = 'tline ' + cls;
-      d.innerHTML = htmlContent;
       termbody.appendChild(d);
       return d;
     }
@@ -460,37 +515,66 @@
       d.className = 'tline gap';
       termbody.appendChild(d);
     }
-
+    function typeText(el, text, speed, done) {
+      let ci = 0;
+      const iv = setInterval(() => {
+        if (run !== termRun) { clearInterval(iv); return; }
+        el.textContent = text.slice(0, ++ci);
+        if (ci >= text.length) { clearInterval(iv); if (done) done(); }
+      }, speed);
+    }
+    function typeOut(lines, i, done) {
+      if (run !== termRun) return;
+      if (i >= lines.length) { done(); return; }
+      const d = addLine('out');
+      const s = document.createElement('span');
+      d.appendChild(s);
+      typeText(s, lines[i], 16, () => setTimeout(() => typeOut(lines, i + 1, done), 70));
+    }
     function typeCmd(i) {
       if (run !== termRun) return;
       if (i >= script.length) {
-        const d = addLine('cmd', '<span class="tprompt">$ </span>');
+        const d = addLine('cmd');
+        d.innerHTML = '<span class="tprompt">$ </span>';
         const b = document.createElement('span');
         b.className = 'tblock';
         d.appendChild(b);
         return;
       }
       const item = script[i];
-      const line = addLine('cmd', '<span class="tprompt">$ </span>');
+      const line = addLine('cmd');
+      line.innerHTML = '<span class="tprompt">$ </span>';
       const txt = document.createElement('span');
       line.appendChild(txt);
-      let ci = 0;
-      const iv = setInterval(() => {
-        if (run !== termRun) { clearInterval(iv); return; }
-        txt.textContent = item.cmd.slice(0, ++ci);
-        if (ci >= item.cmd.length) {
-          clearInterval(iv);
-          setTimeout(() => {
-            if (run !== termRun) return;
-            item.out.forEach(o => addLine('out', o));
+      typeText(txt, item.cmd, 55, () => {
+        setTimeout(() => {
+          if (run !== termRun) return;
+          typeOut(item.out, 0, () => {
             addGap();
-            setTimeout(() => typeCmd(i + 1), 260);
-          }, 180);
-        }
-      }, 55);
+            setTimeout(() => typeCmd(i + 1), 240);
+          });
+        }, 160);
+      });
     }
     typeCmd(0);
   }
+
+  // ---- language ----
+  function applyLang() {
+    const d = i18n[lang];
+    document.querySelector('[data-view="main"]').textContent = d.main;
+    document.querySelector('[data-view="about"]').textContent = d.about;
+    document.getElementById('tagtext').textContent = d.tag;
+    document.getElementById('foottext').textContent = d.foot;
+    document.querySelectorAll('.lang').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+    localStorage.setItem('lang', lang);
+    if (!views.about.hidden) startTerm();
+  }
+  document.querySelectorAll('.lang').forEach(b => b.addEventListener('click', () => {
+    lang = b.dataset.lang;
+    applyLang();
+  }));
+  applyLang();
 
   if (location.hash === '#about') show('about');
 </script>
