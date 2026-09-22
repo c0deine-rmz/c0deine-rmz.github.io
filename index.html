@@ -474,8 +474,8 @@
       views: 'просмотры',
       gate: 'нажми',
       script: [
-        { cmd: 'whoami', out: ['c0deine'] },
-        { cmd: 'id', out: ['фрилансер · вайбкодер · делаю красивую хуйню'] },
+        { cmd: 'whoami', out: ['c0deine · 19 yo · no gf, flying solo'] },
+        { cmd: 'id', out: ['фрилансер · вайбкодер'] },
         { cmd: 'cat навыки.txt', out: ['python / java / js / lua'] },
         { cmd: 'cat статус.txt', out: ['открыт для заказов'] },
         { cmd: 'ls контакты/', out: ['steam   telegram   discord'] }
@@ -490,8 +490,8 @@
       views: 'views',
       gate: 'click',
       script: [
-        { cmd: 'whoami', out: ['c0deine'] },
-        { cmd: 'id', out: ['freelancer · vibecoder · i make pretty shit'] },
+        { cmd: 'whoami', out: ['c0deine · 19 yo · no gf, flying solo'] },
+        { cmd: 'id', out: ['freelancer · vibecoder'] },
         { cmd: 'cat skills.txt', out: ['python / java / js / lua'] },
         { cmd: 'cat status.txt', out: ['open for work'] },
         { cmd: 'ls contacts/', out: ['steam   telegram   discord'] }
@@ -586,7 +586,7 @@
     sndClick();
     const vc = document.getElementById('vcount');
     const bump = !localStorage.getItem('vseen');
-    fetch('https://abacus.jasoncameron.dev/' + (bump ? 'hit' : 'get') + '/c0deine-rmz/views26')
+    fetch('https://abacus.jasoncameron.dev/' + (bump ? 'hit' : 'get') + '/c0deine-rmz/views27')
       .then(r => r.json())
       .then(j => {
         vc.textContent = j.value;
@@ -634,7 +634,12 @@
     tabs.forEach(t => t.classList.toggle('active', t.dataset.view === name));
     for (const k in views) views[k].hidden = (k !== name);
     history.replaceState(null, '', name === 'about' ? '#about' : '#');
-    if (name === 'about') startTerm();
+    if (name === 'about') {
+      startTerm();
+    } else {
+      termRun++;
+      if (document.body.classList.contains('started')) typeTag();
+    }
   }
   tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.view)));
 
@@ -674,7 +679,7 @@
       const d = addLine('out');
       const s = document.createElement('span');
       d.appendChild(s);
-      typeText(s, lines[i], 16, () => setTimeout(() => typeOut(lines, i + 1, done), 70), 3);
+      typeText(s, lines[i], 34, () => setTimeout(() => typeOut(lines, i + 1, done), 130), 2);
     }
     function typeCmd(i) {
       if (run !== termRun) return;
@@ -691,7 +696,7 @@
       line.innerHTML = '<span class="tprompt">$ </span>';
       const txt = document.createElement('span');
       line.appendChild(txt);
-      typeText(txt, item.cmd, 55, () => {
+      typeText(txt, item.cmd, 105, () => {
         setTimeout(() => {
           if (run !== termRun) return;
           typeOut(item.out, 0, () => {
