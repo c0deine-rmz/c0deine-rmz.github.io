@@ -579,6 +579,18 @@
     }, 34);
   }
 
+  // ---- входная последовательность: ник, цитата, кнопки + звук ----
+  function playEntrance() {
+    document.getElementById('tagtext').textContent = '';
+    const entrance = [];
+    for (let i = 0; i < 7; i++) entrance.push([1000 + i * 140, 1]);
+    [[2050, 0], [2900, 0], [3250, 0], [3600, 0], [4400, 0]].forEach(x => entrance.push(x));
+    entrance.forEach(([t, isChar]) => setTimeout(() => {
+      if (isChar) sndTick(); else tone(700, 0.05, 0.01);
+    }, t + 400));
+    setTimeout(typeTag, 2600);
+  }
+
   // ---- вход: клик открывает сайт, запускает звук и считает просмотр ----
   const gate = document.getElementById('gate');
   gate.addEventListener('click', () => {
@@ -595,14 +607,7 @@
       .catch(() => { document.getElementById('views').style.display = 'none'; });
     gate.classList.add('bye');
     document.body.classList.add('started');
-    document.getElementById('tagtext').textContent = '';
-    const entrance = [];
-    for (let i = 0; i < 7; i++) entrance.push([1000 + i * 140, 1]);
-    [[2050, 0], [2900, 0], [3250, 0], [3600, 0], [4400, 0]].forEach(x => entrance.push(x));
-    entrance.forEach(([t, isChar]) => setTimeout(() => {
-      if (isChar) sndTick(); else tone(700, 0.05, 0.01);
-    }, t + 400));
-    setTimeout(typeTag, 2600);
+    playEntrance();
     setTimeout(() => gate.remove(), 700);
   }, { once: true });
 
@@ -638,7 +643,12 @@
       startTerm();
     } else {
       termRun++;
-      if (document.body.classList.contains('started')) typeTag();
+      if (document.body.classList.contains('started')) {
+        document.body.classList.remove('started');
+        void document.body.offsetWidth;
+        document.body.classList.add('started');
+        playEntrance();
+      }
     }
   }
   tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.view)));
