@@ -262,6 +262,21 @@
   .handle { color: var(--dim); font-size: 13px; transition: color .1s ease-in-out; }
   li:hover .handle { color: var(--fg); }
 
+  .views {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--dim);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    animation: fadein 1s ease 3.9s forwards;
+    margin-top: 2px;
+  }
+  .views svg { display: block; }
+  .views .clip { overflow: hidden; display: flex; align-items: center; }
+  .views .clip img { display: block; height: 20px; margin-left: -10px; filter: grayscale(1); }
+
   .term {
     width: 100%;
     max-width: 560px;
@@ -380,6 +395,11 @@
         </li>
       </ul>
     </nav>
+
+    <div class="views" id="views" title="просмотры">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span class="clip"><img id="vbadge" src="https://komarev.com/ghpvc/?username=c0deine-rmz&color=000000&style=flat-square&label=" alt=""></span>
+    </div>
   </section>
 
   <section class="view" id="view-about" hidden>
@@ -406,6 +426,7 @@
       tag: 'пока ты спишь — твое время уходит',
       foot: 'не является лекарственным средством',
       toast: 'скопировано',
+      views: 'просмотры',
       script: [
         { cmd: 'whoami', out: ['c0deine'] },
         { cmd: 'id', out: ['фрилансер · вайбкодер · верующий но наркоман'] },
@@ -420,6 +441,7 @@
       tag: 'while you sleep — your time is running out',
       foot: 'not a medicinal product',
       toast: 'copied',
+      views: 'views',
       script: [
         { cmd: 'whoami', out: ['c0deine'] },
         { cmd: 'id', out: ['freelancer · vibecoder · believer but a junkie'] },
@@ -460,6 +482,39 @@
     toast.textContent = i18n[lang].toast;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 1400);
+  });
+
+  // ---- sounds ----
+  let AC = null;
+  function initAudio() {
+    if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    if (AC && AC.state === 'suspended') AC.resume();
+  }
+  addEventListener('pointerdown', initAudio);
+  addEventListener('keydown', initAudio);
+  function tone(freq, dur, vol, type, slideTo) {
+    if (!AC) return;
+    try {
+      const t = AC.currentTime;
+      const o = AC.createOscillator();
+      const g = AC.createGain();
+      o.type = type || 'sine';
+      o.frequency.setValueAtTime(freq, t);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+      g.gain.setValueAtTime(vol, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g);
+      g.connect(AC.destination);
+      o.start(t);
+      o.stop(t + dur + 0.02);
+    } catch (e) {}
+  }
+  const sndHover = () => tone(1500, 0.03, 0.012);
+  const sndClick = () => tone(240, 0.07, 0.05, 'triangle', 110);
+  const sndTick = () => tone(2100, 0.015, 0.006, 'square');
+  document.querySelectorAll('ul.links a, ul.links button, .tab, .lang').forEach(el => {
+    el.addEventListener('mouseenter', sndHover);
+    el.addEventListener('click', sndClick);
   });
 
   // ---- custom cursor ----
@@ -515,11 +570,12 @@
       d.className = 'tline gap';
       termbody.appendChild(d);
     }
-    function typeText(el, text, speed, done) {
+    function typeText(el, text, speed, done, tickEvery) {
       let ci = 0;
       const iv = setInterval(() => {
         if (run !== termRun) { clearInterval(iv); return; }
         el.textContent = text.slice(0, ++ci);
+        if (ci % (tickEvery || 1) === 0) sndTick();
         if (ci >= text.length) { clearInterval(iv); if (done) done(); }
       }, speed);
     }
@@ -529,7 +585,7 @@
       const d = addLine('out');
       const s = document.createElement('span');
       d.appendChild(s);
-      typeText(s, lines[i], 16, () => setTimeout(() => typeOut(lines, i + 1, done), 70));
+      typeText(s, lines[i], 16, () => setTimeout(() => typeOut(lines, i + 1, done), 70), 3);
     }
     function typeCmd(i) {
       if (run !== termRun) return;
@@ -566,6 +622,7 @@
     document.querySelector('[data-view="about"]').textContent = d.about;
     document.getElementById('tagtext').textContent = d.tag;
     document.getElementById('foottext').textContent = d.foot;
+    document.getElementById('views').title = d.views;
     document.querySelectorAll('.lang').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
     localStorage.setItem('lang', lang);
     if (!views.about.hidden) startTerm();
@@ -575,6 +632,9 @@
     applyLang();
   }));
   applyLang();
+
+  const vbadge = document.getElementById('vbadge');
+  vbadge.addEventListener('error', () => { document.getElementById('views').style.display = 'none'; });
 
   if (location.hash === '#about') show('about');
 </script>
