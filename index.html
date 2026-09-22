@@ -444,7 +444,7 @@
 
     <div class="views" id="views" title="просмотры">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
-      <span class="clip"><img id="vbadge" data-src="https://visitor-badge.laobi.icu/badge?page_id=c0deine-rmz.github.io&left_color=black&right_color=black&left_text=%E2%80%8B" alt=""></span>
+      <span class="clip"><img id="vbadge" data-src="https://visitor-badge.laobi.icu/badge?page_id=c0deine-rmz.github.io.v2&left_color=black&right_color=black&left_text=%E2%80%8B" alt=""></span>
     </div>
   </section>
 
@@ -586,7 +586,13 @@
     initAudio();
     sndClick();
     const vb = document.getElementById('vbadge');
-    if (vb.dataset.src) { vb.src = vb.dataset.src; vb.removeAttribute('data-src'); }
+    const today = new Date().toDateString();
+    if (localStorage.getItem('vdate') !== today) {
+      localStorage.setItem('vdate', today);
+      if (vb.dataset.src) { vb.src = vb.dataset.src; vb.removeAttribute('data-src'); }
+    } else {
+      document.getElementById('views').style.display = 'none';
+    }
     gate.classList.add('bye');
     document.body.classList.add('started');
     document.getElementById('tagtext').textContent = '';
